@@ -1,5 +1,6 @@
 package com.insurance.confic;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.context.annotation.Bean;
@@ -29,7 +30,7 @@ public class Basic {
 	        CorsConfiguration config = new CorsConfiguration();
 
 	        // Allow requests from 'http://localhost:3000' (your frontend URL)
-	        config.addAllowedOrigin("http://localhost:3000");
+	        config.addAllowedOrigin( "http://localhost:3000");
 	        config.addAllowedOrigin("http://localhost:5173");
 	        config.addAllowedOrigin("https://oldinsuranceproject.netlify.app/");
 
