@@ -8,8 +8,7 @@ import com.insurance.response.LoginResponse;
 
 @Service
 public interface UserService {
-	 String addEmployee(RegistrationDTO employeeDTO);
-LoginResponse loginUser(LoginDTO userLogin);
+	String addEmployee(RegistrationDTO employeeDTO);
+
+	LoginResponse loginUser(LoginDTO userLogin);
 }
-
-

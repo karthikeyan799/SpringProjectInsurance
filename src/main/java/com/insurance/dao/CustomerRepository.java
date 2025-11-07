@@ -60,6 +60,8 @@ public interface CustomerRepository extends JpaRepository<Customer, Integer>  {
 	// Customized date by join
 	@Query("select c.customerName as customerName,c.eMail as email,c.phoneNumber as phoneNumber,p.policyNumber as policyNumber,p.policyType as policyType from Customer c JOIN Policy p on c.customerId=p.customer")
 	List<CustomerPolicyCustomized> findByCustomerPolicyCustomized();
+	
+//	List<>
 //
 //	boolean existsByCustomerName(String customerName);
 //

@@ -37,7 +37,7 @@ import jakarta.validation.constraints.NotNull;
 		private String policyType;
 
 		@NotBlank
-		@Column(unique = true)
+//		@Column(unique = true)
 		private String policyNumber;
 
 		@NotBlank
@@ -65,7 +65,7 @@ import jakarta.validation.constraints.NotNull;
 		@JsonBackReference
 		@ManyToOne(fetch = FetchType.EAGER)
 		@JoinColumn(name = "customerId", nullable = false, referencedColumnName = "customerId")
-		Customer customer;
+		private Customer customer;
 
 		public int getPolicyId() {
 			return policyId;
@@ -99,6 +99,22 @@ import jakarta.validation.constraints.NotNull;
 			this.policyHolder = policyHolder;
 		}
 
+		public LocalDate getPolicyStartDate() {
+			return policyStartDate;
+		}
+
+		public void setPolicyStartDate(LocalDate policyStartDate) {
+			this.policyStartDate = policyStartDate;
+		}
+
+		public LocalDate getPolicyEndDate() {
+			return policyEndDate;
+		}
+
+		public void setPolicyEndDate(LocalDate policyEndDate) {
+			this.policyEndDate = policyEndDate;
+		}
+
 		public Date getCreatedAt() {
 			return createdAt;
 		}
@@ -123,22 +139,6 @@ import jakarta.validation.constraints.NotNull;
 			this.policyAmount = policyAmount;
 		}
 
-		public void setPolicyStartDate(LocalDate policyStartDate) {
-			this.policyStartDate = policyStartDate;
-		}
-
-		public LocalDate getPolicyStartDate() {
-			return policyStartDate;
-		}
-
-		public LocalDate getPolicyEndDate() {
-			return policyEndDate;
-		}
-
-		public void setPolicyEndDate(LocalDate policyEndDate) {
-			this.policyEndDate = policyEndDate;
-		}
-
 		public Customer getCustomer() {
 			return customer;
 		}
@@ -152,8 +152,9 @@ import jakarta.validation.constraints.NotNull;
 			return "Policy [policyId=" + policyId + ", policyType=" + policyType + ", policyNumber=" + policyNumber
 					+ ", policyHolder=" + policyHolder + ", policyStartDate=" + policyStartDate + ", policyEndDate="
 					+ policyEndDate + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + ", policyAmount="
-					+ policyAmount + "]";
+					+ policyAmount + ", customer=" + customer + "]";
 		}
+
 	}
 
 

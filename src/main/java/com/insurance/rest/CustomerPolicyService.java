@@ -1,5 +1,7 @@
 package com.insurance.rest;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -7,8 +9,13 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -52,9 +59,10 @@ public class CustomerPolicyService {
 
 	@Autowired
 	ResponseObject object;
-	
+
 	@Autowired
 	CustomerRepository repository;
+
 	@RequestMapping("/sayHello")
 	public String sayhello() {
 		return "Say Hello";
@@ -220,6 +228,21 @@ public class CustomerPolicyService {
 //	        LoginResponse loginResponse = employeeService.loginEmployee(loginDTO);
 //	        return ResponseEntity.ok(loginResponse);
 //	    }
+	
+	@GetMapping("/excel")
+	public ResponseEntity<Resource> downlodeExcel() throws IOException{
+		String filename="category.xlsx";
+		ByteArrayInputStream actualData=customerService.dataToExcel();
+		InputStreamResource file=new InputStreamResource(actualData);
+		
+		
+		   ResponseEntity< Resource> body=   ResponseEntity.ok()
+		.header(HttpHeaders.CONTENT_DISPOSITION,"attachment; filename="+filename)
+		.contentType(MediaType.parseMediaType("application/vnd.ms-excel"))
+		.body(file);
+		return body;
+	}
+
 	@RequestMapping(value = "/registration", method = RequestMethod.POST)
 	public RegisterResponse registration(@RequestBody Registration register) {
 		RegisterResponse responseObject = new RegisterResponse();
@@ -229,26 +252,26 @@ public class CustomerPolicyService {
 			System.out.println(responseObject.getRegistered());
 			System.out.println(responseObject.getSuccessMessage());
 		} else if (responseObject.getSuccessMessage() == null) {
-			System.out.println(responseObject.getFailureMessage());	
+			System.out.println(responseObject.getFailureMessage());
 		}
 		return responseObject;
 	}
+
 	@Autowired
 	private UserService service;
-	  @PostMapping(path = "/save")
-	    public String saveEmployee(@RequestBody RegistrationDTO employeeDTO)
-	    {
-	        String id = service.addEmployee(employeeDTO);
-	        return id;
-	    }
-	
-	    @PostMapping(path = "/loginUser")
-	    public ResponseEntity<?> loginEmployee(@RequestBody LoginDTO loginDTO)
-	    {
-	        LoginResponse loginResponse = service.loginUser(loginDTO);
-	        System.out.println(loginResponse);
-	        return ResponseEntity.ok(loginResponse);
-	    }
+
+	@PostMapping(path = "/save")
+	public String saveEmployee(@RequestBody RegistrationDTO employeeDTO) {
+		String id = service.addEmployee(employeeDTO);
+		return id;
+	}
+
+	@PostMapping(path = "/loginUser")
+	public ResponseEntity<?> loginEmployee(@RequestBody LoginDTO loginDTO) {
+		LoginResponse loginResponse = service.loginUser(loginDTO);
+		System.out.println(loginResponse);
+		return ResponseEntity.ok(loginResponse);
+	}
 //	@RequestMapping(value="login",method=RequestMethod.POST)
 //	@PostMapping("/login")
 //	@RequestMapping(value = "login", method = RequestMethod.POST)
@@ -296,14 +319,16 @@ public class CustomerPolicyService {
 		return responseObject;
 
 	}
+
 	@DeleteMapping("/delete/{id}")
-	String  delete(@PathVariable int id) {
-		if(!repository.existsById(id)) {
+	String delete(@PathVariable int id) {
+		if (!repository.existsById(id)) {
 			throw new CustomerNotFoundException(id);
 		}
 		repository.deleteById(id);
-		return "Customer id"+id+"has been deleted successfully...";
+		return "Customer id" + id + "has been deleted successfully...";
 	}
+
 	@RequestMapping(value = "/fetchAllCustomer", method = RequestMethod.GET)
 	public ResponseObject fetchAllCustomer() throws CustomerInternalServerException {
 		logger.debug("Fetch All Customer Is Triggered");
@@ -325,7 +350,9 @@ public class CustomerPolicyService {
 	public ResponseObject addPolicy(@RequestBody Policy policy) {
 		logger.debug("Create Policy is Triggered");
 
+//		return policyService.insert(policy);
 		ResponseObject responseObject = policyService.insert(policy);
+
 		if (responseObject.getSuccessMessage() != null) {
 			System.out.println(responseObject.getPolicy());
 			System.out.println(responseObject.getSuccessMessage());

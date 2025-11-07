@@ -13,6 +13,12 @@ import jakarta.validation.constraints.NotBlank;
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 public class Registration {
+	@Override
+	public String toString() {
+		return "Registration [userId=" + userId + ", eMail=" + eMail + ", userName=" + userName + ", password="
+				+ password + "]";
+	}
+
 	@Id
 	@GeneratedValue(strategy = (GenerationType.IDENTITY))
 	private int userId;

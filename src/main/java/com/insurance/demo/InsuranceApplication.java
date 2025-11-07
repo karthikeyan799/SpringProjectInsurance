@@ -1,5 +1,6 @@
 package com.insurance.demo;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,11 +36,12 @@ public class InsuranceApplication {
 
 	private static Logger logger = Logger.getLogger(InsuranceApplication.class);
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		ApplicationContext ctx = SpringApplication.run(InsuranceApplication.class, args);
 		logger.debug("*****Insurance Application Started*****");
-
+		
 		CustomerService customerService = ctx.getBean(CustomerService.class);
+//		customerService.generatExcel();
 		PolicyService policyService = ctx.getBean(PolicyService.class);
 		RegistrationService reg = ctx.getBean(RegistrationService.class);
 		CustomerDTO customer = new CustomerDTO();

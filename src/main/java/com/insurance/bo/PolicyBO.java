@@ -28,19 +28,25 @@ public class PolicyBO {
 		Policy policyNumber=policyr.findByPolicyNumber(p.getPolicyNumber());
 		if (p.getPolicyAmount() < 20000) {
 			throw new PolicyInternalServerException(p.getPolicyAmount() + " Policy Amount is Minimum 20000");
-		} else if (p.getPolicyAmount() > 100000) {
+		}
+		else if (p.getPolicyAmount() > 100000) {
 			throw new PolicyInternalServerException(p.getPolicyAmount() + " Oops! is Policy Amount is Maximum 100000");
-		} else if (p.getPolicyHolder().matches(".*\\d.*")) {
+		}
+		else if (p.getPolicyHolder().matches(".*\\d.*")) {
 			throw new CustomerInternalServerException(p.getPolicyHolder() + " Policy Holder is Can't number value.");
-		} else if (p.getPolicyHolder().isBlank() && !p.getPolicyHolder().matches(".*\\d.*")) {
+		}
+		else if (p.getPolicyHolder().isBlank() && !p.getPolicyHolder().matches(".*\\d.*")) {
 			throw new PolicyInternalServerException(p.getPolicyHolder() + " Policy Holder is Empty");
-		} else if (p.getPolicyType().isBlank() && !p.getPolicyType().matches(".*\\d.*")) {
+		}
+		else if (p.getPolicyType().isBlank() && !p.getPolicyType().matches(".*\\d.*")) {
 			throw new PolicyInternalServerException(p.getPolicyType() + " Policy Type is Empty");
-		} else if (p.getPolicyType().matches(".*\\d.*")) {
+		}
+		else if (p.getPolicyType().matches(".*\\d.*")) {
 			throw new PolicyInternalServerException(p.getPolicyType() + " Policy Type is Can't number value.");
 //		}else if(p.getPolicyId()!=p.getPolicyId()) {
 //			throw new DataIntegrityViolationException(p.getPolicyId()+" Duplicate value");
-		}else if(id.concat(p.getPolicyNumber()) == null) {
+		}
+		else if(id.concat(p.getPolicyNumber()) == null) {
 			throw new PolicyInternalServerException(p.getPolicyNumber()+" Policy Number is empty");
 //		}else if(policyNumber!=null) {
 //			throw new DuplicateValueException(p.getPolicyNumber()+" Policy Number is already exists");

@@ -1,10 +1,20 @@
 package com.insurance.service;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import org.apache.log4j.Logger;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
@@ -23,6 +33,7 @@ import com.insurance.exception.CustomerNotFoundException;
 import com.insurance.exception.DuplicateValueException;
 import com.insurance.response.Response;
 import com.insurance.response.ResponseObject;
+//import com.mysql.cj.result.Row;
 
 /**
  *
@@ -200,12 +211,147 @@ public class CustomerService {
 		return responseObject;
 	}
 
+	public ByteArrayInputStream dataToExcel() throws IOException {
+		Workbook workBook = new XSSFWorkbook();
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		Sheet sheet = workBook.createSheet("sheet1");
+
+		Row row = sheet.createRow(0);
+		List<Customer> list1 = customerBo.findCustomers();
+		row.createCell(0).setCellValue("ID");
+		row.createCell(1).setCellValue("NAME");
+		row.createCell(2).setCellValue("AGE");
+		row.createCell(3).setCellValue("GENDER");
+		row.createCell(4).setCellValue("CITY");
+		row.createCell(5).setCellValue("E-MAIL");
+		row.createCell(6).setCellValue("PHONE-NUMBER");
+		row.createCell(7).setCellValue("SALARY");
+		int dataRowIndex = 1;
+		for (Customer customer : list1) {
+			Row dataRow = sheet.createRow(dataRowIndex);
+			dataRow.createCell(0).setCellValue(customer.getCustomerId());
+			dataRow.createCell(1).setCellValue(customer.getCustomerName());
+			dataRow.createCell(2).setCellValue(customer.getCustomerAge());
+			dataRow.createCell(3).setCellValue(customer.getGender());
+			dataRow.createCell(4).setCellValue(customer.getCity());
+			dataRow.createCell(5).setCellValue(customer.geteMail());
+			dataRow.createCell(6).setCellValue(customer.getPhoneNumber());
+			dataRow.createCell(7).setCellValue(customer.getSalary());
+			
+			dataRowIndex++;
+		}
+		workBook.write(out);
+		workBook.close();
+
+		return new ByteArrayInputStream(out.toByteArray());
+	}
+
+	public void generationExcel(String excel) throws IOException {
+		List<Customer> list = customerBo.findCustomers();
+		HSSFWorkbook workbook = new HSSFWorkbook();
+		HSSFSheet sheet = workbook.createSheet("customer");
+		HSSFRow row = sheet.createRow(0);
+		row.createCell(0).setCellValue("ID");
+		row.createCell(1).setCellValue("NAME");
+		row.createCell(2).setCellValue("AGE");
+		row.createCell(3).setCellValue("GENDER");
+
+		int dataRowInt = 1;
+		for (Customer cus : list) {
+			HSSFRow dataRow = sheet.createRow(dataRowInt);
+			dataRow.createCell(0).setCellValue(cus.getCustomerId());
+			dataRow.createCell(1).setCellValue(cus.getCustomerName());
+			dataRow.createCell(2).setCellValue(cus.getCustomerAge());
+			dataRow.createCell(3).setCellValue(cus.getGender());
+			dataRowInt++;
+
+		}
+		FileOutputStream output = new FileOutputStream(excel);
+		workbook.write(output);
+		output.flush();
+		output.close();
+
+	}
+
+//	public Workbook generatExcel(String excelFile) throws Exception {
+//		List<Customer> list1 = customerBo.findCustomers();
+//		FileInputStream inputStream = new FileInputStream(new File(excelFile));
+//		Workbook wb = WorkbookFactory.create(inputStream);
+//		Sheet sh =wb.createSheet("sheet1");
+//		FileOutputStream fop;
+//		Row row;
+//		Cell cell;
+//
+//		row = sh.createRow(1);
+//		row.createCell(0).setCellValue("ID");
+//		cell=row.createCell(0);
+//		cell.setCellValue("karthi");
+//		System.out.println(cell.getStringCellValue());
+////		int dataRowIndex = 1;
+////		for (Customer customer : list1) {
+////			Row dataRow = sh.createRow(dataRowIndex);
+////			dataRow.createCell(0).setCellValue(customer.getCustomerId());
+////			dataRow.createCell(1).setCellValue(customer.getCustomerName());
+////			dataRow.createCell(2).setCellValue(customer.getCustomerAge());
+////			dataRow.createCell(3).setCellValue(customer.getGender());
+////			dataRowIndex++;
+////		}
+//		FileOutputStream output = new FileOutputStream(excelFile);
+//		wb.write(output);
+//		output.flush();
+//		output.close();
+//		return wb;
+//	}
+
+//	public XSSFWorkbook generatExcel(String excelFile) throws IOException {
+//		List<Customer> list1 = customerBo.findCustomers();
+////		FileInputStream inputStream= new FileInputStream(new File(excelFile));
+//		XSSFWorkbook workBook = new XSSFWorkbook(excelFile);
+////		String excelFile = "E:\\Logs\\File.xlsx";
+////		HSSFWorkbook workBook = new HSSFWorkbook();
+//		XSSFSheet sheet = workBook.createSheet("Customer Info");
+//		XSSFRow row = sheet.createRow(0);
+//
+//		row.createCell(0).setCellValue("ID");
+//		row.createCell(1).setCellValue("NAME");
+//		row.createCell(2).setCellValue("AGE");
+//		row.createCell(3).setCellValue("GENDER");
+//		row.createCell(4).setCellValue("CITY");
+//		row.createCell(5).setCellValue("E-MAIL");
+//		row.createCell(6).setCellValue("PHONE-NUMBER");
+//		row.createCell(6).setCellValue("SALARY");
+//
+//		int dataRowIndex = 1;
+//		for (Customer customer : list1) {
+//			XSSFRow dataRow = sheet.createRow(dataRowIndex);
+//			dataRow.createCell(0).setCellValue(customer.getCustomerId());
+//			dataRow.createCell(1).setCellValue(customer.getCustomerName());
+//			dataRow.createCell(2).setCellValue(customer.getCustomerAge());
+//			dataRow.createCell(3).setCellValue(customer.getGender());
+//			dataRow.createCell(4).setCellValue(customer.getCity());
+//			dataRow.createCell(5).setCellValue(customer.geteMail());
+//			dataRow.createCell(6).setCellValue(customer.getPhoneNumber());
+//			dataRow.createCell(7).setCellValue(customer.getSalary());
+//			dataRowIndex++;
+//		}
+////		FileInputStream inputStream= new FileInputStream(sheet);
+//		FileOutputStream output = new FileOutputStream(excelFile);
+//		workBook.write(output);
+////		output.flush();
+//		output.close();
+//		workBook.close();
+//		return workBook;
+////		return list1;
+//		
+//	}
+
 	/**
 	 *
 	 *
 	 * @author Don Doc
 	 */
 	public ResponseObject fetchCustomers() {
+
 		ResponseObject responseObject = new ResponseObject();
 
 		List<Customer> list1 = new ArrayList<Customer>();
@@ -633,7 +779,7 @@ public class CustomerService {
 			response.setSuccessMessage("Customer Average Age is Successfull");
 
 		} catch (CustomerNotFoundException e) {
-			logger.error("Customer Average Age is failure"+e);
+			logger.error("Customer Average Age is failure" + e);
 			response.setFailureMessage("Customer Average Age is failure");
 		}
 		return response;
@@ -656,12 +802,11 @@ public class CustomerService {
 			response.setSuccessMessage("Customer Maximum Salary is Successfull");
 
 		} catch (CustomerNotFoundException e) {
-			logger.error("Customer Maximum Salary is failure"+e);
+			logger.error("Customer Maximum Salary is failure" + e);
 			response.setFailureMessage("Customer Maximum Salary is failure");
 		}
 		return response;
 	}
-	
 
 	/**
 	 *
@@ -680,11 +825,11 @@ public class CustomerService {
 			response.setSuccessMessage("Total Customer is Successfull");
 
 		} catch (CustomerNotFoundException e) {
-			logger.error("Total Customer is failure"+e);
+			logger.error("Total Customer is failure" + e);
 			response.setFailureMessage("Total Customer is failure");
 		}
 		return response;
-	
+
 	}
 
 	/**
@@ -704,11 +849,11 @@ public class CustomerService {
 			response.setSuccessMessage("Total Customer Salary is Successfull");
 
 		} catch (CustomerNotFoundException e) {
-			logger.error("Total Customer Salary is failure"+e);
+			logger.error("Total Customer Salary is failure" + e);
 			response.setFailureMessage("Total Customer Salary is failure");
 		}
 		return response;
-	
+
 	}
 
 	/**
@@ -728,12 +873,11 @@ public class CustomerService {
 			response.setSuccessMessage("Minimum Customer Salary is Successfull");
 
 		} catch (CustomerNotFoundException e) {
-			logger.error("Minimum Customer Salary is failure"+e);
+			logger.error("Minimum Customer Salary is failure" + e);
 			response.setFailureMessage("Minimum Customer Salary is failure");
 		}
 		return response;
-	
-	
+
 	}
 
 	/**

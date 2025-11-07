@@ -10,11 +10,11 @@ import org.springframework.stereotype.Service;
 
 import com.insurance.bo.CustomerBO;
 import com.insurance.bo.PolicyBO;
+import com.insurance.dto.PolicyDTO;
 import com.insurance.entity.Customer;
 import com.insurance.entity.Policy;
 import com.insurance.exception.CustomerNotFoundException;
 import com.insurance.exception.PolicyInternalServerException;
-import com.insurance.exception.PolicyNotFoundException;
 import com.insurance.response.ResponseObject;
 import com.insurance.rest.CustomerPolicyService;
 
@@ -27,45 +27,62 @@ public class PolicyService {
 	@Autowired
 	PolicyBO policyBo;
 
-	Policy policy;
-
 	@Autowired
 	ResponseObject object;
 
-	public ResponseObject insert(final Policy policy) {
+	public ResponseObject insert(final Policy dto) {
 		ResponseObject responseObject = new ResponseObject();
 
 		try {
+//			Customer response=customerBo.findCustomer(dto.getCustomerId());
+//			Policy policy=new Policy();
+//			policy.setPolicyAmount(dto.getPolicyAmount());
+//			policy.setPolicyEndDate(dto.getPolicyEndDate());
+//			policy.setPolicyHolder(dto.getPolicyHolder());
+//			policy.setPolicyNumber(dto.getPolicyNumber());
+//			policy.setPolicyStartDate(dto.getPolicyEndDate());
+//			policy.setPolicyType(dto.getPolicyType());
+//			policy.setCustomer(response);
+//	 return policyBo.insert(policy);
+//		}catch(Exception e) {
+//			e.printStackTrace();
+//		}
+			Customer response = customerBo.findCustomer(dto.getCustomer().getCustomerId());
+//		return null;
+			Policy policy1 = new Policy();
+			String id = String.valueOf(dto.getPolicyId());
+			String concateId = "POL2-".concat(id);
+			policy1.setPolicyType(dto.getPolicyType());
+			policy1.setPolicyHolder(dto.getPolicyHolder());
+//			policy1.setPolicyNumber(concateId);
+			String num=policyNumber(dto.getPolicyId());
+			policy1.setPolicyNumber(num);
+			policy1.setPolicyAmount(dto.getPolicyAmount());
+			policy1.setPolicyStartDate(dto.getPolicyStartDate());
+			policy1.setPolicyEndDate(dto.getPolicyEndDate());
 
-			Customer response = customerBo.findCustomer(policy.getCustomer().getCustomerId());
-			Policy policy1 = policyBo.insert(policy);
-			policy1.setPolicyType(policy.getPolicyType());
-			policy1.setPolicyHolder(policy.getPolicyHolder());
-			policy1.setPolicyNumber("POL" + policy.getPolicyNumber());
-			policy1.setPolicyAmount(policy.getPolicyAmount());
-			policy1.setPolicyStartDate(policy.getPolicyStartDate());
-			policy1.setPolicyEndDate(policy.getPolicyEndDate());
+			policy1.setCustomer(response);
+			Policy polic = policyBo.insert(policy1);
 
-			policy.setCustomer(response);
 			if (logger.isInfoEnabled()) {
 
-				logger.info("Policy Id " + policy.getPolicyId() + " Added Successfully...");
+				logger.info("Policy Id " + policy1.getPolicyId() + " Added Successfully...");
 			}
-			responseObject.setSuccessMessage(policy.getPolicyId() + " Added Successfully object...");
-			responseObject.setPolicy(policy1);
+			responseObject.setSuccessMessage(policy1.getPolicyId() + " Added Successfully object...");
+			responseObject.setPolicy(polic);
 
 		} catch (PolicyInternalServerException r) {
 			if (logger.isDebugEnabled()) {
-				logger.error(policy.getPolicyId() + " Error When Adding..." + r);
+				logger.error(dto.getPolicyId() + " Error When Adding..." + r);
 			}
 			responseObject.setFailureMessage(r.getMessage());
 //			System.out.println(policy.getPolicyId() + " Error When  Adding Policy...");
 
 		} catch (DataIntegrityViolationException e) {
 			if (logger.isDebugEnabled()) {
-				logger.error(policy.getPolicyId() + " Duplicate value error.." + e);
+				logger.error(dto.getPolicyId() + " Duplicate value error.." + e);
 			}
-			if (policy.getPolicyNumber() != null) {
+			if (dto.getPolicyNumber() != null) {
 //				throw new DuplicateValueException(p.getPolicyNumber()+" Policy Number is already exists");
 
 				responseObject.setFailureMessage("Duplicate Violation... Please check PolicyNumber");
@@ -73,6 +90,13 @@ public class PolicyService {
 		}
 //		return object;
 		return responseObject;
+	}
+
+	public String policyNumber(int number) {
+		Policy policy = new Policy();
+		String num=String.valueOf(number);
+		num=policy.getPolicyId()+policy.getPolicyNumber();
+		return num;
 	}
 
 	public ResponseObject update(final Policy policy) {
@@ -88,6 +112,7 @@ public class PolicyService {
 			policy1.setPolicyAmount(policy.getPolicyAmount());
 			policy1.setPolicyStartDate(policy.getPolicyStartDate());
 			policy1.setPolicyEndDate(policy.getPolicyEndDate());
+//			policy1.setCustomer(policy.getCustomer().getCustomerId());
 
 			policy.setCustomer(response);
 			if (logger.isInfoEnabled()) {
@@ -135,6 +160,7 @@ public class PolicyService {
 				policy.getPolicyAmount();
 				policy.getPolicyEndDate();
 				policy.getPolicyStartDate();
+				policy.getCustomer().getCustomerId();
 				if (logger.isInfoEnabled()) {
 					logger.info(policyId + " Policy ID is fetched successfully..");
 					logger.info(policy);

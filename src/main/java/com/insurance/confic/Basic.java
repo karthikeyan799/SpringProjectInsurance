@@ -28,7 +28,8 @@ public class Basic {
 
 	        // Allow requests from 'http://localhost:3000' (your frontend URL)
 //	        config.addAllowedOrigin("http://localhost:3000");
-	        config.addAllowedOrigin("http://localhost:5173");
+//	        config.addAllowedOrigin("http://localhost:5173");
+	        config.addAllowedOrigin("https://oldinsuranceproject.netlify.app");
 
 	        
 	        // Allow all HTTP methods (GET, POST, PUT, DELETE, etc.)
