@@ -58,10 +58,10 @@ public class CustomerBO {
 		} else if (c.getCustomerAge() < 18) {
 
 			throw new CustomerInternalServerException(c.getCustomerAge() + " Customer Age is Invalid");
-		} else if (c.getSalary() < 10000)
+		} else if (c.getSalary() < 15000)
 
 		{
-			throw new CustomerInternalServerException("Salary is minimum 10,000.");
+			throw new CustomerInternalServerException("Salary is minimum 15,000.");
 
 		} else if (c.getSalary() > 50000) {
 			throw new CustomerInternalServerException("Salary is maximum 80,000.");
