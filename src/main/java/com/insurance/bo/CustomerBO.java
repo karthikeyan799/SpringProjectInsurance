@@ -53,7 +53,7 @@ public class CustomerBO {
 			throw new CustomerInternalServerException(c.geteMail() + "--- " + " .com is missing");
 		}
 
-		if (c.geteMail() != null && !c.geteMail().matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")) {
+		if (c.geteMail() != null && !c.geteMail().matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z]+\\.[a-zA-Z]{2,}$")) {
 			throw new CustomerInternalServerException(c.geteMail() + " Invalid email ");
 		} else if (c.getCustomerAge() < 18) {
 
